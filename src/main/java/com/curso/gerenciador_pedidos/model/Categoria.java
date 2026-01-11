@@ -1,9 +1,8 @@
 package com.curso.gerenciador_pedidos.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Categoria {
@@ -14,7 +13,19 @@ public class Categoria {
 
     private String nome;
 
+    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Produto> produtos;
+
     public Categoria() {
+    }
+
+    public List<Produto> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(List<Produto> produtos) {
+        produtos.forEach(p -> p.setCategoria(this));
+        this.produtos = produtos;
     }
 
     public Categoria(String nome) {

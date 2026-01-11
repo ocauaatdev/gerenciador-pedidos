@@ -1,11 +1,10 @@
 package com.curso.gerenciador_pedidos.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Pedido {
@@ -15,6 +14,17 @@ public class Pedido {
     private Long id;
 
     private LocalDate data;
+
+    private Double valorTotal;
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    private List<ItemPedido> itens = new ArrayList<>();
+
+
+    public void adicionarItem(ItemPedido item){
+        item.setPedido(this);
+        this.itens.add(item);
+    }
 
     public Pedido() {
     }
@@ -29,5 +39,9 @@ public class Pedido {
 
     public LocalDate getData() {
         return data;
+    }
+
+    public void setData(LocalDate data) {
+        this.data = data;
     }
 }

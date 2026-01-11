@@ -2,6 +2,9 @@ package com.curso.gerenciador_pedidos.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Produto {
 
@@ -15,6 +18,11 @@ public class Produto {
     @Column(name = "valor")
     private Double preco;
 
+    @ManyToOne
+    private Categoria categoria;
+
+    @OneToMany(mappedBy = "produto")
+    private List<ItemPedido> itensPedido = new ArrayList<>();
 
     public Produto(){
     }
@@ -22,6 +30,14 @@ public class Produto {
     public Produto(String nome, Double preco) {
         this.nome = nome;
         this.preco = preco;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
     public Long getId() {
