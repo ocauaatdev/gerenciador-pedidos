@@ -1,13 +1,7 @@
 package com.curso.gerenciador_pedidos.principal;
 
-import com.curso.gerenciador_pedidos.model.Categoria;
-import com.curso.gerenciador_pedidos.model.ItemPedido;
-import com.curso.gerenciador_pedidos.model.Pedido;
-import com.curso.gerenciador_pedidos.model.Produto;
-import com.curso.gerenciador_pedidos.repository.CategoriaRepository;
-import com.curso.gerenciador_pedidos.repository.ItemPedidoRepository;
-import com.curso.gerenciador_pedidos.repository.PedidoRepository;
-import com.curso.gerenciador_pedidos.repository.ProdutoRepository;
+import com.curso.gerenciador_pedidos.model.*;
+import com.curso.gerenciador_pedidos.repository.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,13 +18,16 @@ public class Principal {
 
     private ItemPedidoRepository itemPedidoRepository;
 
+    private FornecedorRepository fornecedorRepository;
+
     Scanner scanner = new Scanner(System.in);
 
-    public Principal(ProdutoRepository produtoRepository, CategoriaRepository categoriaRepository, PedidoRepository pedidoRepository, ItemPedidoRepository itemPedidoRepository) {
+    public Principal(ProdutoRepository produtoRepository, CategoriaRepository categoriaRepository, PedidoRepository pedidoRepository, ItemPedidoRepository itemPedidoRepository, FornecedorRepository fornecedorRepository) {
         this.produtoRepository = produtoRepository;
         this.categoriaRepository = categoriaRepository;
         this.pedidoRepository = pedidoRepository;
         this.itemPedidoRepository = itemPedidoRepository;
+        this.fornecedorRepository = fornecedorRepository;
     }
 
     public Principal() {
@@ -39,6 +36,10 @@ public class Principal {
     public void executar(){
 
         System.out.println("Iniciando o gerenciador de pedidos...");
+
+//        Fornecedor fornecedor = new Fornecedor();
+//        fornecedor.setNome("Fornecedor Padrão");
+//        fornecedorRepository.save(fornecedor);
 
         int opcao = -1;
 
@@ -105,6 +106,7 @@ public class Principal {
 
         Produto produto = new Produto(nomeProduto, precoProduto);
         produto.setCategoria(categoria);
+        produto.setFornecedor(fornecedorRepository.findById(1L).orElse(null));
         produtoRepository.save(produto);
 
         System.out.println("******* PRODUTO REGISTRADO COM SUCESSO *******");
@@ -166,7 +168,9 @@ public class Principal {
 
     private void exibirProdutos(){
         produtoRepository.findAll().forEach(produto -> {
-            System.out.println("Código:" + produto.getId() + " - " + "Produto: " + produto.getNome() + " - Preço: " + produto.getPreco());
+            System.out.println("Código:" + produto.getId() + " - " + "Produto: " + produto.getNome() + " - Preço: " + produto.getPreco() + " - " + "Fornecedor: " + (produto.getFornecedor() != null ? produto.getFornecedor().getNome() : "Sem fornecedor"));
+
+
         });
     }
 

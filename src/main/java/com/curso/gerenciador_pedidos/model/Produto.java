@@ -24,12 +24,24 @@ public class Produto {
     @OneToMany(mappedBy = "produto")
     private List<ItemPedido> itensPedido = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "fornecedor_id")
+    private Fornecedor fornecedor;
+
     public Produto(){
     }
 
     public Produto(String nome, Double preco) {
         this.nome = nome;
         this.preco = preco;
+    }
+
+    public Fornecedor getFornecedor() {
+        return fornecedor;
+    }
+
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
     }
 
     public Categoria getCategoria() {
