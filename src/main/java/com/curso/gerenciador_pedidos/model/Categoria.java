@@ -19,6 +19,11 @@ public class Categoria {
     public Categoria() {
     }
 
+    @Override
+    public String toString() {
+        return nome;
+    }
+
     public List<Produto> getProdutos() {
         return produtos;
     }

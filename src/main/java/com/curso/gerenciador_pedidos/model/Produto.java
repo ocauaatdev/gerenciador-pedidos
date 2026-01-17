@@ -19,6 +19,7 @@ public class Produto {
     private Double preco;
 
     @ManyToOne
+    @JoinColumn(name = "categoria_id")
     private Categoria categoria;
 
     @OneToMany(mappedBy = "produto")
@@ -27,6 +28,15 @@ public class Produto {
     @ManyToOne
     @JoinColumn(name = "fornecedor_id")
     private Fornecedor fornecedor;
+
+    @Override
+    public String toString() {
+        return "Produto:" +
+                "nome: '" + nome + '\'' +
+                ", preco: " + preco +
+                ", categoria: " + categoria +
+                ", fornecedor: " + fornecedor;
+    }
 
     public Produto(){
     }

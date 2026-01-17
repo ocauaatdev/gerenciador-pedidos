@@ -15,11 +15,14 @@ public class Pedido {
 
     private LocalDate data;
 
-    private Double valorTotal;
-
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<ItemPedido> itens = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Pedido: " +
+                "data: " + data;
+    }
 
     public void adicionarItem(ItemPedido item){
         item.setPedido(this);

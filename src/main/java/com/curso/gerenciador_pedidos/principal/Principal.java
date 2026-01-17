@@ -45,7 +45,7 @@ public class Principal {
 
         while (opcao != 0){
 
-            System.out.println("Selecione uma opção:\n1. Adicionar nova categoria\n2. Adicionar novo produto\n3. Realizar novo pedido\n4. Listar categorias\n5. Listar produtos\n6. Listar pedidos\n0. Sair");
+            System.out.println("Selecione uma opção:\n1. Adicionar nova categoria\n2. Adicionar novo produto\n3. Realizar novo pedido\n4. Listar categorias\n5. Listar produtos\n6. Listar pedidos\n7. Buscar produto pelo nome\n8. Buscar por categoria\n9. Buscar por maior preço\n10. Buscar por menor preço\n11. Buscar por termo\n12. Buscar pedido sem data de entrega\n13. Buscar pedidos com data de entrega\n14. Contar produtos por categoria\n0. Sair");
 
             opcao = scanner.nextInt();
             scanner.nextLine();
@@ -68,6 +68,30 @@ public class Principal {
                     break;
                 case 6:
                     exibirPedidos();
+                    break;
+                case 7:
+                    buscarProdutoNome();
+                    break;
+                case 8:
+                    buscarProdutoCategoria();
+                    break;
+                case 9:
+                    buscarPorMaiorPreco();
+                    break;
+                case 10:
+                    buscarPorMenorPreco();
+                    break;
+                case 11:
+                    buscarTermo();
+                    break;
+                case 12:
+                    buscarPedidoSemDtEntrega();
+                    break;
+                case 13:
+                    buscarPedidoComDtEntrega();
+                    break;
+                case 14:
+                    contarProdutosCategoria();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -123,9 +147,7 @@ public class Principal {
 
     private void realizarPedido(){
         Pedido pedido = new Pedido();
-
-
-        pedido.setData(LocalDate.now());
+        pedido.setData(LocalDate.now().plusDays(5));
 
         int seletor = 0;
         List<Produto> produtos = produtoRepository.findAll();
@@ -178,5 +200,80 @@ public class Principal {
         pedidoRepository.findAll().forEach(pedido -> {
             System.out.println("Pedido ID: " + pedido.getId() + " - Data: " + pedido.getData());
         });
+    }
+
+    private void buscarProdutoNome() {
+        System.out.println("Digite o nome do produto que deseja:");
+        var nomeProduto = scanner.nextLine();
+
+        Optional<Produto> produto = produtoRepository.findByNome(nomeProduto);
+
+        if (produto.isPresent()){
+            System.out.println(produto.get());
+        }else {
+            System.out.println("Produto não encontrado");
+        }
+
+    }
+
+    private void buscarProdutoCategoria() {
+        System.out.println("Digite a categoria para busca: ");
+        var nomeCategoria = scanner.nextLine();
+
+        Optional<Categoria> categoria = categoriaRepository.findByNomeContainingIgnoreCase(nomeCategoria);
+
+        if (categoria.isPresent()){
+            Categoria categoriaEncontrada = categoria.get();
+            List<Produto> produtos = produtoRepository.findByCategoria(categoriaEncontrada);
+            produtos.forEach(System.out::println);
+        }else {
+            System.out.println("Categoria não encontrada");
+        }
+    }
+
+    private void buscarPorMaiorPreco() {
+        System.out.println("Qual o valor mínimo deseja pagar?");
+        var minValor = scanner.nextDouble();
+
+        List<Produto> produtos = produtoRepository.findByPrecoGreaterThanEqual(minValor);
+        produtos.forEach(System.out::println);
+    }
+
+    private void buscarPorMenorPreco() {
+        System.out.println("Qual o valor máximo que deseja pagar?");
+        var maxValor = scanner.nextDouble();
+
+        List<Produto> produtos = produtoRepository.findByPrecoLessThanEqual(maxValor);
+        produtos.forEach(System.out::println);
+    }
+
+    private void buscarTermo() {
+        System.out.println("Digite o nome do produto que deseja:");
+        var nomeProduto = scanner.nextLine();
+
+        Optional<Produto> produto = produtoRepository.findByNomeContainingIgnoreCase(nomeProduto);
+
+        if (produto.isPresent()){
+            System.out.println(produto.get());
+        }else {
+            System.out.println("Produto não encontrado");
+        }
+    }
+    private void buscarPedidoSemDtEntrega() {
+        System.out.println("Listando pedidos sem data de entrega:");
+        List<Pedido> pedidos = pedidoRepository.findByDataNull();
+        pedidos.forEach(p -> System.out.println("Pedido: " + p.getId()));
+    }
+    private void buscarPedidoComDtEntrega() {
+        System.out.println("Listando pedidos com data de entrega:");
+        List<Pedido> pedidos = pedidoRepository.findByDataNotNull();
+        pedidos.forEach(p -> System.out.println("Pedido: " + p.getId() + " com data de entrega para: " + p.getData()));
+    }
+
+    private void contarProdutosCategoria() {
+        System.out.println("Digite o nome da categoria: ");
+        var categoria = scanner.nextLine();
+        var contagem = produtoRepository.countByCategoriaNome(categoria);
+        System.out.println(contagem);
     }
 }
