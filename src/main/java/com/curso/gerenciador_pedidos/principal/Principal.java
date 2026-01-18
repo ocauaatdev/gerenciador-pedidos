@@ -45,7 +45,33 @@ public class Principal {
 
         while (opcao != 0){
 
-            System.out.println("Selecione uma opção:\n1. Adicionar nova categoria\n2. Adicionar novo produto\n3. Realizar novo pedido\n4. Listar categorias\n5. Listar produtos\n6. Listar pedidos\n7. Buscar produto pelo nome\n8. Buscar por categoria\n9. Buscar por maior preço\n10. Buscar por menor preço\n11. Buscar por termo\n12. Buscar pedido sem data de entrega\n13. Buscar pedidos com data de entrega\n14. Contar produtos por categoria\n0. Sair");
+            System.out.println(
+                    "***************************\n" +
+                    "Selecione uma opção:" +
+                            "\n1. Adicionar nova categoria" +
+                            "\n2. Adicionar novo produto" +
+                            "\n3. Realizar novo pedido" +
+                            "\n4. Listar categorias" +
+                            "\n5. Listar produtos" +
+                            "\n6. Listar pedidos" +
+                            "\n7. Buscar produto pelo nome" +
+                            "\n8. Buscar produto por categoria" +
+                            "\n9. Buscar produto por maior preço" +
+                            "\n10. Buscar produto por menor preço" +
+                            "\n11. Buscar produto por termo" +
+                            "\n12. Buscar pedido sem data de entrega" +
+                            "\n13. Buscar pedidos com data de entrega" +
+                            "\n14. Contar produtos por categoria" +
+                            "\n15. Buscar produtos com preço maior que um valor" +
+                            "\n16. Buscar produtos ordenados pelo preço" +
+                            "\n17. Buscar produtos ordenados pelo preço decrescente" +
+                            "\n18. Média de preços dos produtos" +
+                            "\n19. Contar produtos por categoria(JPQL)" +
+                            "\n20. Consultar preço máximo de um produto em uma categoria" +
+                            "\n21. Buscar produto pelo nome ou pela categoria" +
+                            "\n0. Sair" +
+                            "\n***************************"
+            );
 
             opcao = scanner.nextInt();
             scanner.nextLine();
@@ -92,6 +118,27 @@ public class Principal {
                     break;
                 case 14:
                     contarProdutosCategoria();
+                    break;
+                case 15:
+                    buscarProdutoMaiorValor();
+                    break;
+                case 16:
+                    buscarProdutosOrdenadosPreco();
+                    break;
+                case 17:
+                    buscarProdutosOrdenadosPrecoDesc();
+                    break;
+                case 18:
+                    mediaPrecosProdutos();
+                    break;
+                case 19:
+                    contarProdutosCategoriaJpql();
+                    break;
+                case 20:
+                    precoMaxProdutoCategoria();
+                    break;
+                case 21:
+                    buscarProdutoNomeOuCategoria();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -275,5 +322,60 @@ public class Principal {
         var categoria = scanner.nextLine();
         var contagem = produtoRepository.countByCategoriaNome(categoria);
         System.out.println(contagem);
+    }
+
+    private void buscarProdutoMaiorValor() {
+        System.out.println("Digite o valor mínimo para o produto:");
+        var minValor = scanner.nextInt();
+        scanner.nextLine();
+
+        List<Produto> produtos = produtoRepository.produtosPrecoMaior(minValor);
+        produtos.forEach(p -> System.out.printf(
+                "Produto: %s - Preço: %s \n", p.getNome(),p.getPreco()
+        ));
+    }
+
+    private void buscarProdutosOrdenadosPreco(){
+        System.out.println("Produtos ordenados pelo preço crescente:");
+        List<Produto> produtosOrdenados = produtoRepository.buscarProdutosPrecoCrescente();
+        produtosOrdenados.forEach(p -> System.out.printf(
+                "Produto: %s - Preço: %s \n", p.getNome(),p.getPreco()));
+    }
+
+    private void buscarProdutosOrdenadosPrecoDesc(){
+        System.out.println("Produtos ordenados pelo preço decrescente:");
+        List<Produto> produtosOrdenados = produtoRepository.buscarProdutosPrecoDecrescente();
+        produtosOrdenados.forEach(p -> System.out.printf(
+                "Produto: %s - Preço: %s \n", p.getNome(),p.getPreco()));
+    }
+
+    private void mediaPrecosProdutos(){
+        System.out.println("MÉDIA DE PREÇO DOS PRODUTOS:");
+        Double media = produtoRepository.consultaMediaPrecosProdutos();
+        System.out.printf("R$ %.2f%n",media);
+    }
+
+    private void contarProdutosCategoriaJpql() {
+        System.out.println("Digite o nome da categoria: ");
+        var categoria = scanner.nextLine();
+
+        Integer produtosCategoria = produtoRepository.contarProdutosCategoria(categoria);
+        System.out.println("Quantidade de produtos na categoria " + categoria + ": " + produtosCategoria);
+    }
+
+    private void precoMaxProdutoCategoria(){
+        System.out.println("Digite o nome da categoria: ");
+        var categoria = scanner.nextLine();
+
+        Double precoMax = produtoRepository.consultarPrecoMaxCategoria(categoria);
+        System.out.println("Preço máximo de produto na categoria " + categoria + ": " + precoMax);
+    }
+    private void buscarProdutoNomeOuCategoria(){
+        System.out.println("Digite o nome do produto ou da categoria:");
+        var resposta = scanner.nextLine();
+
+        List<Produto> produtosFiltrados = produtoRepository.buscarProdutosNomeOuCategoria(resposta);
+        produtosFiltrados.forEach(p -> System.out.printf(
+                "Produto: %s - Preço: %s - Categoria: %s\n", p.getNome(),p.getPreco(), p.getCategoria()));
     }
 }
